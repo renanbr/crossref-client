@@ -12,9 +12,9 @@ $works = $client->search($query, $filters, $parameters);
 
 echo 'Total ' . count($works);
 echo '<ol>';
-foreach ($works as $i => $work) {
+foreach ($works as $work) {
     echo
-        '<li>' . $i . ' ' .
+        '<li>' .
             '<a href="' . $work->URL . '">' . $work->title[0] . '</a> ' .
             'by ' . $work->author[0]->family .
         '</li>';
