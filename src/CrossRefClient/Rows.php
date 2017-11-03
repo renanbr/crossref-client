@@ -13,40 +13,28 @@ namespace RenanBr\CrossRefClient;
 
 class Rows implements \Iterator, \Countable
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $resource;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $parameters;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $page;
 
-    /**
-     * @var Caller
-     */
+    /** @var Caller */
     private $caller;
 
-    /**
-     * @var \stdClass
-     */
+    /** @var \stdClass */
     private $response;
 
-    /**
-     * @var \ArrayIterator
-     */
+    /** @var \ArrayIterator */
     private $items;
 
     /**
-     * @param string
-     * @param array
-     * @param Caller
+     * @param string $resource
+     * @param array $parameters
+     * @param Caller $caller
      */
     public function __construct($resource, array $parameters, Caller $caller)
     {

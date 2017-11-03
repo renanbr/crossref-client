@@ -13,14 +13,12 @@ namespace RenanBr\CrossRefClient;
 
 class Caller
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $baseUrl = 'http://api.crossref.org';
 
     /**
-     * @param string
-     * @param array
+     * @param string $path
+     * @param array $parameters
      * @return \stdClass
      */
     public function request($path, array $parameters)

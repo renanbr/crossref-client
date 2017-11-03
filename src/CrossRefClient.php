@@ -16,19 +16,15 @@ use RenanBr\CrossRefClient\Rows;
 
 class CrossRefClient
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $resource;
 
-    /**
-     * @var Caller
-     */
+    /** @var Caller */
     private $caller;
 
     /**
-     * @param string
-     * @param Caller
+     * @param string $resource
+     * @param Caller $caller
      */
     public function __construct($resource = null, Caller $caller = null)
     {
@@ -37,19 +33,20 @@ class CrossRefClient
     }
 
     /**
-     * @param string
+     * @param string $value
      * @return \stdClass
      */
     public function find($value)
     {
         $path = $this->resource . '/' . $value;
+
         return $this->caller->request($path, [])->message;
     }
 
     /**
-     * @param string
-     * @param array
-     * @param array
+     * @param null|string $query
+     * @param null|array $filters
+     * @param null|array $parameters
      * @return Rows
      */
     public function search($query = null, array $filters = null, array $parameters = null)
@@ -65,7 +62,7 @@ class CrossRefClient
     }
 
     /**
-     * @param array
+     * @param array $filters
      * @return string
      */
     private function encodeFilters(array $filters)
