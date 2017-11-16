@@ -1,13 +1,38 @@
 language: php
 
+cache:
+    directories:
+        - $HOME/.composer/cache
+
 php:
     - 5.6
+      env:
+        - DEPS=lowest
+    - 5.6
+      env:
+        - DEPS=latest
     - 7.0
+      env:
+        - DEPS=lowest
+    - 7.0
+      env:
+        - DEPS=latest
     - 7.1
+      env:
+        - DEPS=lowest
+    - 7.1
+      env:
+        - DEPS=latest
     - 7.2
+      env:
+        - DEPS=lowest
+    - 7.2
+      env:
+        - DEPS=latest
 
 before_script:
-    - composer install --no-interaction
+    - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --no-interaction --prefer-lowest --prefer-stable ; fi
+    - if [[ $DEPS == 'latest' ]]; then travis_retry composer update --no-interaction ; fi
 
 script:
     - ./vendor/bin/phpunit

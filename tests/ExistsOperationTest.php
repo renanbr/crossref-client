@@ -18,24 +18,6 @@ use GuzzleHttp\Psr7\Response;
 
 class ExistsOperationTest extends TestCase
 {
-    public function testTargetedEndpoint()
-    {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200),
-            ])
-        );
-        $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
-
-        $client->exists('foo/bar');
-
-        $request = $transactions[0]['request'];
-        $this->assertSame('HEAD', $request->getMethod());
-        $this->assertSame('https://api.crossref.org/foo/bar', (string) $request->getUri());
-    }
-
     public function testPositiveResponseReading()
     {
         $client = $this->buildClient(
@@ -60,5 +42,23 @@ class ExistsOperationTest extends TestCase
         );
 
         $this->assertFalse($client->exists('not/found'));
+    }
+
+    public function testTargetedEndpoint()
+    {
+        $handlerStack = HandlerStack::create(
+            new MockHandler([
+                new Response(200),
+            ])
+        );
+        $transactions = [];
+        $handlerStack->push(Middleware::history($transactions));
+        $client = $this->buildClient($handlerStack);
+
+        $client->exists('foo/bar');
+
+        $request = $transactions[0]['request'];
+        $this->assertSame('HEAD', $request->getMethod());
+        $this->assertSame('https://api.crossref.org/foo/bar', (string) $request->getUri());
     }
 }
