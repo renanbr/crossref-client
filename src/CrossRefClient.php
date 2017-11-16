@@ -33,6 +33,7 @@ class CrossRefClient
      */
     public function request($path, array $parameters = [])
     {
+        $parameters = $this->encodeParameters($parameters);
         $response = $this
             ->buildGuzzleClient()
             ->request('GET', $path, [
@@ -72,6 +73,32 @@ class CrossRefClient
     public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     * @see https://github.com/CrossRef/rest-api-doc#multiple-filters
+     * @see https://github.com/CrossRef/rest-api-doc#facet-counts
+     */
+    private function encodeParameters(array $parameters)
+    {
+        $encodable = ['filter', 'facet'];
+        foreach ($encodable as $key) {
+            if (!isset($parameters[$key]) || !is_array($parameters[$key])) {
+                continue;
+            }
+            $encoded = [];
+            foreach ($parameters[$key] as $name => $value) {
+                if (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                }
+                $encoded[] = $name . ':' . $value;
+            }
+            $parameters[$key] = implode(',', $encoded);
+        }
+
+        return $parameters;
     }
 
     /**
