@@ -1,0 +1,14 @@
+{
+    "name": "renanbr/crossref-client",
+    "description": "Client for CrossRef API",
+    "license": "MIT",
+    "type": "library",
+    "keywords": ["crossref", "client", "api"],
+    "authors": [{
+        "name": "Renan de Lima Barbosa",
+        "email": "renandelima@gmail.com"
+    }],
+    "config": {
+        "sort-packages": true
+    }
+}
