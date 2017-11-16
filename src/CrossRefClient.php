@@ -13,6 +13,7 @@ namespace RenanBr;
 
 use GuzzleHttp;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 
 class CrossRefClient
@@ -37,6 +38,26 @@ class CrossRefClient
         ;
 
         return GuzzleHttp\json_decode($response->getBody(), true);
+    }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public function exists($path)
+    {
+        try {
+            return 200 === $this
+                ->buildGuzzleClient()
+                ->request('HEAD', $path)
+                ->getStatusCode()
+            ;
+        } catch (ClientException $exception) {
+            if ($exception->hasResponse() && 404 === $exception->getResponse()->getStatusCode()) {
+                return false;
+            }
+            throw $exception;
+        }
     }
 
     /**
