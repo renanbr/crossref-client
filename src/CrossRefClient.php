@@ -26,6 +26,9 @@ class CrossRefClient
     /** @var string */
     private $userAgent;
 
+    /** @var string */
+    private $version;
+
     /**
      * @param string $path
      * @param array $parameters
@@ -33,6 +36,7 @@ class CrossRefClient
      */
     public function request($path, array $parameters = [])
     {
+        $path = $this->buildPath($path);
         $parameters = $this->encodeParameters($parameters);
         $response = $this
             ->buildGuzzleClient()
@@ -56,7 +60,7 @@ class CrossRefClient
         try {
             return 200 === $this
                 ->buildGuzzleClient()
-                ->request('HEAD', $path)
+                ->request('HEAD', $this->buildPath($path))
                 ->getStatusCode()
             ;
         } catch (ClientException $exception) {
@@ -73,6 +77,25 @@ class CrossRefClient
     public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
+    }
+
+    /**
+     * @param string $version
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function buildPath($path)
+    {
+        return $this->version && '/' !== mb_substr($path, 0, 1)
+            ? implode('/', [$this->version, $path])
+            : $path;
     }
 
     /**
