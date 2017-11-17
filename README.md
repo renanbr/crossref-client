@@ -13,7 +13,7 @@
     </a>
 </p>
 
-[![Build Status](https://travis-ci.org/renanbr/crossref-client.svg?branch=1.x)](https://travis-ci.org/renanbr/crossref-client)
+[![Build Status](https://travis-ci.org/renanbr/crossref-client.svg?branch=master)](https://travis-ci.org/renanbr/crossref-client)
 
 ## Table of content
 
