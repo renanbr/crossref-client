@@ -1,18 +1,23 @@
-<center>
-
-# PHP CrossRef Client
-
-This is a library for the [Crossref REST API](https://www.crossref.org/services/metadata-delivery/rest-api/) written in [PHP](https://php.net).
-
-[<img src="https://assets.crossref.org/logo/crossref-metadata-apis-200.svg" width="200" height="83" alt="Crossref Metadata APIs logo">](https://www.crossref.org/services/metadata-delivery/rest-api/) [<img src="https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg" height="83" alt="PHP logo">](https://php.net)
-
-</center>
+<h1 align="center">PHP CrossRef Client</h1>
+<p align="center">
+    This is a library for the
+    <a href="https://www.crossref.org/services/metadata-delivery/rest-api/">Crossref REST API</a>
+    written in <a href="https://php.net">PHP</a>.
+</p>
+<p align="center">
+    <a href="https://www.crossref.org/services/metadata-delivery/rest-api/">
+        <img src="https://assets.crossref.org/logo/crossref-metadata-apis-200.svg" width="200" height="83" alt="Crossref Metadata APIs logo">
+    </a>
+    <a href="https://php.net">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg" height="83" alt="PHP logo">
+    </a>
+</p>
 
 [![Build Status](https://travis-ci.org/renanbr/crossref-client.svg?branch=1.x)](https://travis-ci.org/renanbr/crossref-client)
 
 ## Table of content
 
-* [Overview](#overview)
+* [Introduction](#introduction)
 * [Installing](#installing)
 * [Usage](#usage)
    * [Singletons](#singletons)
@@ -25,9 +30,11 @@ This is a library for the [Crossref REST API](https://www.crossref.org/services/
    * [Tying to a specific major version](#tying-to-a-specific-major-version)
 * [Handling errors](#handling-errors)
 
-## Overview
+## Introduction
 
-This is **NOT** an official library! The intent of this library is to provide an easy way to make requests. You **SHOULD** read this documentation in conjunction with the [official CrossRef's REST API documentation](https://github.com/CrossRef/rest-api-doc). Highlighted features:
+This is **NOT** an official library! The intent of this library is to provide an easy way to make requests to the CrossRef's REST API. You **SHOULD** read this documentation in conjunction with the [official documentation](https://github.com/CrossRef/rest-api-doc).
+
+Highlighted features:
 
 - You don't need to worry about making HTTP requests;
 - Proper [exceptions] are thrown if a HTTP error occurs;
@@ -36,6 +43,8 @@ This is **NOT** an official library! The intent of this library is to provide an
 - [Filter](https://github.com/CrossRef/rest-api-doc#filter-names) and [facet](https://github.com/CrossRef/rest-api-doc#facet-counts) parameters will be encoded if needed;
 - You can [be polite](https://github.com/CrossRef/rest-api-doc#etiquette) easily (caching, identifying your script);
 - You can [tie to a specific major version of the API](https://github.com/CrossRef/rest-api-doc#how-to-manage-api-versions) easily.
+
+Library's summary:
 
 ```php
 class RenanBr\CrossRefClient
