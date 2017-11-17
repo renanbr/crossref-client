@@ -17,14 +17,22 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Storage\Psr16CacheStorage;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
+use Psr\SimpleCache\CacheInterface;
 
 class CrossRefClient
 {
     const BASE_URI = 'https://api.crossref.org';
+    const CACHE_TTL = 600; // 10 minutes
     const LIB_VERSION = '1.x-dev';
 
     /** @var string */
     private $userAgent;
+
+    /** @var CacheInterface */
+    private $cache;
 
     /** @var string */
     private $version;
@@ -77,6 +85,11 @@ class CrossRefClient
     public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
+    }
+
+    public function setCache(CacheInterface $cache)
+    {
+        $this->cache = $cache;
     }
 
     /**
@@ -140,6 +153,16 @@ class CrossRefClient
                     GuzzleHttp\default_user_agent()
                 ])));
             })
+        );
+
+        // Injects cache middleware if storage is available
+        $this->cache && $handlerStack->push(
+            new CacheMiddleware(
+                new GreedyCacheStrategy(
+                    new Psr16CacheStorage($this->cache),
+                    self::CACHE_TTL
+                )
+            )
         );
 
         return new Client([
