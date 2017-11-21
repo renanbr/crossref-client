@@ -1,8 +1,14 @@
 language: php
 
+sudo: false
+
 cache:
     directories:
         - $HOME/.composer/cache
+
+env:
+    global:
+        - COMPOSER_ARGS="--no-interaction --no-suggest"
 
 matrix:
     include:
@@ -24,8 +30,8 @@ matrix:
           env: DEPS=latest
 
 before_script:
-    - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --no-interaction --prefer-lowest --prefer-stable ; fi
-    - if [[ $DEPS == 'latest' ]]; then travis_retry composer update --no-interaction ; fi
+    - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update $COMPOSER_ARGS --prefer-lowest --prefer-stable ; fi
+    - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
 
 script:
     - ./vendor/bin/phpunit
