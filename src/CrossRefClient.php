@@ -126,10 +126,15 @@ class CrossRefClient
             }
             $encoded = [];
             foreach ($parameters[$key] as $name => $value) {
-                if (is_bool($value)) {
-                    $value = $value ? 'true' : 'false';
+                if (!is_array($value)) {
+                    $value = [$value];
                 }
-                $encoded[] = $name . ':' . $value;
+                foreach ($value as $actual) {
+                    if (is_bool($actual)) {
+                        $actual = $actual ? 'true' : 'false';
+                    }
+                    $encoded[] = $name . ':' . $actual;
+                }
             }
             $parameters[$key] = implode(',', $encoded);
         }

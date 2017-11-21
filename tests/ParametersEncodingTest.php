@@ -93,4 +93,32 @@ class ParametersEncodingTest extends TestCase
             $request->getUri()->getQuery()
         );
     }
+
+    public function testArrayValueEncoding()
+    {
+        $handlerStack = HandlerStack::create(
+            new MockHandler([
+                new Response(200, [], 'null'),
+            ])
+        );
+        $transactions = [];
+        $handlerStack->push(Middleware::history($transactions));
+        $client = $this->buildClient($handlerStack);
+
+        $client->request('with/array/values', [
+            'filter' => [
+                'doi' => [
+                    '10.5555/12345678',
+                    '10.5555/777766665555',
+                ],
+            ],
+        ]);
+
+        $request = $transactions[0]['request'];
+        parse_str($request->getUri()->getQuery(), $query);
+        $this->assertSame(
+            ['filter' => 'doi:10.5555/12345678,doi:10.5555/777766665555'],
+            $query
+        );
+    }
 }
