@@ -15,7 +15,7 @@
 
 [![Build Status](https://travis-ci.org/renanbr/crossref-client.svg?branch=master)](https://travis-ci.org/renanbr/crossref-client)
 
-## Table of content
+## Table of contents
 
 * [Introduction](#introduction)
 * [Installing](#installing)
@@ -23,7 +23,6 @@
    * [Singletons](#singletons)
    * [Determine existence of a singleton](#determine-existence-of-a-singleton)
    * [Lists](#lists)
-      * [Paging](#paging)
 * [Configuration](#configuration)
    * [Caching results](#caching-results)
    * [Identifying your script](#identifying-your-script)
@@ -39,10 +38,9 @@ Highlighted features:
 - You don't need to worry about making HTTP requests;
 - Proper [exceptions] are thrown if a HTTP error occurs;
 - You receive responses as-is, with no treatment;
-- You can paginate easily;
 - [Filter](https://github.com/CrossRef/rest-api-doc#filter-names) and [facet](https://github.com/CrossRef/rest-api-doc#facet-counts) parameters will be encoded if needed;
-- You can [be polite](https://github.com/CrossRef/rest-api-doc#etiquette) easily (caching, identifying your script);
-- You can [tie to a specific major version of the API](https://github.com/CrossRef/rest-api-doc#how-to-manage-api-versions) easily.
+- You can [be polite](https://github.com/CrossRef/rest-api-doc#etiquette) (caching, identifying your script);
+- You can [tie to a specific major version of the API](https://github.com/CrossRef/rest-api-doc#how-to-manage-api-versions).
 
 Library's summary:
 
@@ -147,33 +145,6 @@ $result = $client->request('works', $parameters);
 
 foreach ($result['message']['items'] as $work) {
     // ...
-}
-```
-
-#### Paging
-
-The API will not give you all items at once. If you want to read all the items, you have to paginate. It's recommended to use cursor when requesting for a list. It makes the API answer faster for the next pages.
-
-See: https://github.com/CrossRef/rest-api-doc#deep-paging-with-cursors
-
-```php
-$client = new RenanBr\CrossRefClient();
-
-$parameters = [
-    // Your filters here ...
-    'cursor' => '*', // <--- Add this line!
-];
-$firstPage = $client->request('works', $parameters);
-foreach ($firstPage['message']['items'] as $work) {
-    // ...
-}
-
-if ($parameters['cursor'] !== $response['message']['next-cursor']) {
-    $parameters['cursor'] = $response['message']['next-cursor'];
-    $secondPage = $client->request('works', $parameters);
-    foreach ($secondPage['message']['items'] as $work) {
-        // ...
-    }
 }
 ```
 
