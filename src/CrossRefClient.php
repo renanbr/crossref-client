@@ -25,7 +25,7 @@ use Psr\SimpleCache\CacheInterface;
 class CrossRefClient
 {
     const BASE_URI = 'https://api.crossref.org';
-    const CACHE_TTL = 600; // 10 minutes
+    const CACHE_TTL = 1200; // 20 minutes
     const LIB_VERSION = '1.x-dev';
 
     /** @var string */
