@@ -11,6 +11,7 @@
 
 namespace RenanBr\CrossRefClient\Test;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use RenanBr\CrossRefClient;
@@ -22,15 +23,9 @@ class TestCase extends BaseTestCase
      */
     protected function buildClient(HandlerStack $handler)
     {
-        $client = $this
-            ->getMockBuilder(CrossRefClient::class)
-            ->setMethods(['createGuzzleHandlerStack'])
-            ->getMock()
-        ;
-        $client
-            ->method('createGuzzleHandlerStack')
-            ->willReturn($handler)
-        ;
+        return new CrossRefClient(new Client([
+            'handler' => $handler,
+        ]));
 
         return $client;
     }

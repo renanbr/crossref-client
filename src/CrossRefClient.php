@@ -28,6 +28,9 @@ class CrossRefClient
     const CACHE_TTL = 1200; // 20 minutes
     const LIB_VERSION = '1.x-dev';
 
+    /** @var Client */
+    private $httpClient;
+
     /** @var string */
     private $userAgent;
 
@@ -37,6 +40,11 @@ class CrossRefClient
     /** @var string */
     private $version;
 
+    public function __construct(Client $httpClient = null)
+    {
+        $this->httpClient = $httpClient ?: new Client();
+    }
+
     /**
      * @param string $path
      * @param array $parameters
@@ -44,11 +52,12 @@ class CrossRefClient
      */
     public function request($path, array $parameters = [])
     {
-        $path = $this->buildPath($path);
+        $uri = $this->buildUri($path);
         $parameters = $this->encodeParameters($parameters);
+        $this->prepareHttpClient();
         $response = $this
-            ->buildGuzzleClient()
-            ->request('GET', $path, [
+            ->httpClient
+            ->request('GET', $uri, [
                 'query' => $parameters,
                 'headers' => [
                     'Accept' => 'application/json',
@@ -66,9 +75,12 @@ class CrossRefClient
     public function exists($path)
     {
         try {
+            $uri = $this->buildUri($path);
+            $this->prepareHttpClient();
+
             return 200 === $this
-                ->buildGuzzleClient()
-                ->request('HEAD', $this->buildPath($path))
+                ->httpClient
+                ->request('HEAD', $uri)
                 ->getStatusCode()
             ;
         } catch (ClientException $exception) {
@@ -104,11 +116,14 @@ class CrossRefClient
      * @param string $path
      * @return string
      */
-    private function buildPath($path)
+    private function buildUri($path)
     {
-        return $this->version && '/' !== mb_substr($path, 0, 1)
-            ? implode('/', [$this->version, $path])
-            : $path;
+        // Prepends version to the path when it's available and path is relative
+        if ($this->version && '/' !== mb_substr($path, 0, 1)) {
+            $path = $this->version . '/' . $path;
+        }
+
+        return self::BASE_URI . '/' . ltrim($path, '/');
     }
 
     /**
@@ -142,45 +157,29 @@ class CrossRefClient
         return $parameters;
     }
 
-    /**
-     * @return Client
-     */
-    private function buildGuzzleClient()
+    private function prepareHttpClient()
     {
-        $handlerStack = $this->createGuzzleHandlerStack();
+        $handler = $this->httpClient->getConfig('handler');
 
-        // Specifies User-Agent header
-        $handlerStack->unshift(
-            Middleware::mapRequest(function (Request $request) {
-                return $request->withHeader('User-Agent', implode(' ', array_filter([
-                    $this->userAgent,
-                    sprintf('RenanBr-CrossRef-Client/%s', self::LIB_VERSION),
-                    GuzzleHttp\default_user_agent()
-                ])));
-            })
-        );
+        // Prepends middleware that injects User-Agent header
+        $userAgentName = __CLASS__ . '_user_agent';
+        $handler->remove($userAgentName);
+        $handler->unshift(Middleware::mapRequest(function (Request $request) {
+            return $request->withHeader('User-Agent', implode(' ', array_filter([
+                $this->userAgent,
+                sprintf('RenanBr-CrossRef-Client/%s', self::LIB_VERSION),
+                GuzzleHttp\default_user_agent()
+            ])));
+        }), $userAgentName);
 
-        // Injects cache middleware if storage is available
-        $this->cache && $handlerStack->push(
-            new CacheMiddleware(
-                new GreedyCacheStrategy(
-                    new Psr16CacheStorage($this->cache),
-                    self::CACHE_TTL
-                )
+        // Appends cache middleware
+        $cacheName = __CLASS__ . '_cache';
+        $handler->remove($cacheName);
+        $this->cache && $handler->push(new CacheMiddleware(
+            new GreedyCacheStrategy(
+                new Psr16CacheStorage($this->cache),
+                self::CACHE_TTL
             )
-        );
-
-        return new Client([
-            'base_uri' => self::BASE_URI,
-            'handler' => $handlerStack,
-        ]);
-    }
-
-    /**
-     * @return HandlerStack
-     */
-    protected function createGuzzleHandlerStack()
-    {
-        return HandlerStack::create();
+        ), $cacheName);
     }
 }
