@@ -115,7 +115,7 @@ See: https://github.com/CrossRef/rest-api-doc#headers-only
 ```php
 $client = new RenanBr\CrossRefClient();
 $exists = $client->exists('members/98');
-var_dump(exists);
+var_dump($exists);
 ```
 
 The above example will output:
