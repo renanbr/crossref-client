@@ -25,7 +25,6 @@ use Psr\SimpleCache\CacheInterface;
 class CrossRefClient
 {
     const BASE_URI = 'https://api.crossref.org';
-    const CACHE_TTL = 1200; // 20 minutes
     const LIB_VERSION = '1.x-dev';
 
     /** @var Client */
@@ -36,6 +35,9 @@ class CrossRefClient
 
     /** @var CacheInterface */
     private $cache;
+
+    /** @var int */
+    private $cacheTtl;
 
     /** @var string */
     private $version;
@@ -99,9 +101,14 @@ class CrossRefClient
         $this->userAgent = $userAgent;
     }
 
-    public function setCache(CacheInterface $cache)
+    /**
+     * @param CacheInterface $cache
+     * @param int $ttl
+     */
+    public function setCache(CacheInterface $cache, $ttl = null)
     {
         $this->cache = $cache;
+        $this->cacheTtl = $ttl ?: 1200; // 1200 seconds = 20 minutes
     }
 
     /**
@@ -178,7 +185,7 @@ class CrossRefClient
         $this->cache && $handler->push(new CacheMiddleware(
             new GreedyCacheStrategy(
                 new Psr16CacheStorage($this->cache),
-                self::CACHE_TTL
+                $this->cacheTtl
             )
         ), $cacheName);
     }
