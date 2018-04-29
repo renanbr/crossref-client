@@ -13,11 +13,13 @@ EOF;
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
+        '@Symfony' => true,
         '@Symfony:risky' => true,
         'align_multiline_comment' => true,
         'array_syntax' => ['syntax' => 'short'],
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
+        'concat_space' => ['spacing' => 'one'],
         'header_comment' => ['header' => $header],
         'heredoc_to_nowdoc' => true,
         'mb_str_functions' => true,
@@ -32,6 +34,7 @@ return PhpCsFixer\Config::create()
         'php_unit_strict' => true,
         'phpdoc_add_missing_param_annotation' => true,
         'phpdoc_order' => true,
+        'phpdoc_separation' => false,
         'phpdoc_types_order' => true,
         'strict_comparison' => true,
         'strict_param' => true,

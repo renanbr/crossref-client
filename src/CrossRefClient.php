@@ -14,7 +14,6 @@ namespace RenanBr;
 use GuzzleHttp;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use Kevinrob\GuzzleCache\CacheMiddleware;
@@ -48,8 +47,8 @@ class CrossRefClient
     }
 
     /**
-     * @param string $path
-     * @param array $parameters
+     * @param  string $path
+     * @param  array  $parameters
      * @return array
      */
     public function request($path, array $parameters = [])
@@ -71,7 +70,7 @@ class CrossRefClient
     }
 
     /**
-     * @param string $path
+     * @param  string $path
      * @return bool
      */
     public function exists($path)
@@ -103,7 +102,7 @@ class CrossRefClient
 
     /**
      * @param CacheInterface $cache
-     * @param int $ttl
+     * @param int            $ttl
      */
     public function setCache(CacheInterface $cache, $ttl = null)
     {
@@ -120,7 +119,7 @@ class CrossRefClient
     }
 
     /**
-     * @param string $path
+     * @param  string $path
      * @return string
      */
     private function buildUri($path)
@@ -134,7 +133,7 @@ class CrossRefClient
     }
 
     /**
-     * @param array $parameters
+     * @param  array $parameters
      * @return array
      * @see https://github.com/CrossRef/rest-api-doc#multiple-filters
      * @see https://github.com/CrossRef/rest-api-doc#facet-counts
@@ -175,7 +174,7 @@ class CrossRefClient
             return $request->withHeader('User-Agent', implode(' ', array_filter([
                 $this->userAgent,
                 sprintf('RenanBr-CrossRef-Client/%s', self::LIB_VERSION),
-                GuzzleHttp\default_user_agent()
+                GuzzleHttp\default_user_agent(),
             ])));
         }), $userAgentName);
 
