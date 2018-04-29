@@ -11,36 +11,23 @@
 
 namespace RenanBr\CrossRefClient\Test;
 
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 
 class RequestOperationTest extends TestCase
 {
     public function testResponseDecoding()
     {
-        $client = $this->buildClient(
-            HandlerStack::create(
-                new MockHandler([
-                    new Response(200, [], '"bar"'),
-                ])
-            )
-        );
+        $responses = [new Response(200, [], '"bar"')];
+        $client = $this->buildMockedCrossRefClient($responses);
 
         $this->assertSame('bar', $client->request('foo'));
     }
 
     public function testTargetedEndpoint()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->request('foo/bar');
 
@@ -51,14 +38,9 @@ class RequestOperationTest extends TestCase
 
     public function testTargetedUrlWithParameters()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->request('with/parameters', [
             'foo' => 'bar',

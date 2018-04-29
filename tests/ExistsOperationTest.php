@@ -11,49 +11,31 @@
 
 namespace RenanBr\CrossRefClient\Test;
 
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 
 class ExistsOperationTest extends TestCase
 {
     public function testPositiveResponseReading()
     {
-        $client = $this->buildClient(
-            HandlerStack::create(
-                new MockHandler([
-                    new Response(200),
-                ])
-            )
-        );
+        $responses = [new Response(200)];
+        $client = $this->buildMockedCrossRefClient($responses);
 
         $this->assertTrue($client->exists('it/exists'));
     }
 
     public function testNegativeResponseReading()
     {
-        $client = $this->buildClient(
-            HandlerStack::create(
-                new MockHandler([
-                    new Response(404),
-                ])
-            )
-        );
+        $responses = [new Response(404)];
+        $client = $this->buildMockedCrossRefClient($responses);
 
         $this->assertFalse($client->exists('not/found'));
     }
 
     public function testTargetedEndpoint()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200),
-            ])
-        );
+        $responses = [new Response(200)];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->exists('foo/bar');
 

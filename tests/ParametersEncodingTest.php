@@ -11,23 +11,15 @@
 
 namespace RenanBr\CrossRefClient\Test;
 
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 
 class ParametersEncodingTest extends TestCase
 {
     public function testFilterEncoding()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->request('with/parameters', [
             'filter' => [
@@ -47,14 +39,9 @@ class ParametersEncodingTest extends TestCase
 
     public function testFacetEncoding()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->request('with/parameters', [
             'facet' => [
@@ -73,14 +60,9 @@ class ParametersEncodingTest extends TestCase
 
     public function testEncodedParametersMustNotBeTouched()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->request('with/parameters', [
             'filter' => 'foo',
@@ -96,14 +78,9 @@ class ParametersEncodingTest extends TestCase
 
     public function testArrayValueEncoding()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->request('with/array/values', [
             'filter' => [

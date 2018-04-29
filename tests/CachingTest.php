@@ -13,40 +13,29 @@ namespace RenanBr\CrossRefClient\Test;
 
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Cache\Bridge\SimpleCache\SimpleCacheBridge;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
 class CachingTest extends TestCase
 {
     public function testRequest()
     {
-        $firstClient = $this->buildClient(
-            HandlerStack::create(
-                new MockHandler([
-                    new Response(200, [], '"first"'),
-                    new Response(200, [], '"first again"'),
-                ])
-            )
-        );
+        $firstClientResponses = [
+            new Response(200, [], '"first"'),
+            new Response(200, [], '"first again"'),
+        ];
+        $firstClient = $this->buildMockedCrossRefClient($firstClientResponses);
 
-        $secondClient = $this->buildClient(
-            HandlerStack::create(
-                new MockHandler([
-                    new Response(200, [], '"second"'),
-                    new Response(200, [], '"second again"'),
-                ])
-            )
-        );
+        $secondClientResponses = [
+            new Response(200, [], '"second"'),
+            new Response(200, [], '"second again"'),
+        ];
+        $secondClient = $this->buildMockedCrossRefClient($secondClientResponses);
 
-        $thirdClient = $this->buildClient(
-            HandlerStack::create(
-                new MockHandler([
-                    new Response(200, [], '"third"'),
-                    new Response(200, [], '"third again"'),
-                ])
-            )
-        );
+        $thirdClientResponses = [
+            new Response(200, [], '"third"'),
+            new Response(200, [], '"third again"'),
+        ];
+        $thirdClient = $this->buildMockedCrossRefClient($thirdClientResponses);
 
         $cache = new SimpleCacheBridge(new ArrayCachePool());
         $firstClient->setCache($cache);

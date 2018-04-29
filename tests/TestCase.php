@@ -12,7 +12,9 @@
 namespace RenanBr\CrossRefClient\Test;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use RenanBr\CrossRefClient;
 
@@ -21,12 +23,15 @@ class TestCase extends BaseTestCase
     /**
      * @return CrossRefClient
      */
-    protected function buildClient(HandlerStack $handler)
+    protected function buildMockedCrossRefClient(array $responses, array &$transactionsContainer = null)
     {
+        $handler = HandlerStack::create(new MockHandler($responses));
+        if (null !== $transactionsContainer) {
+            $handler->push(Middleware::history($transactionsContainer));
+        }
+
         return new CrossRefClient(new Client([
             'handler' => $handler,
         ]));
-
-        return $client;
     }
 }

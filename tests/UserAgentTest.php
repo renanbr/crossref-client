@@ -11,23 +11,15 @@
 
 namespace RenanBr\CrossRefClient\Test;
 
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 
 class UserAgentTest extends TestCase
 {
     public function testRequestOperation()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200, [], 'null'),
-            ])
-        );
+        $responses = [new Response(200, [], 'null')];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->setUserAgent('GroovyBib/1.1');
         $client->request('foo');
@@ -38,14 +30,9 @@ class UserAgentTest extends TestCase
 
     public function testExistsOperation()
     {
-        $handlerStack = HandlerStack::create(
-            new MockHandler([
-                new Response(200),
-            ])
-        );
+        $responses = [new Response(200)];
         $transactions = [];
-        $handlerStack->push(Middleware::history($transactions));
-        $client = $this->buildClient($handlerStack);
+        $client = $this->buildMockedCrossRefClient($responses, $transactions);
 
         $client->setUserAgent('FunkyLib/1.4');
         $client->exists('bar');
