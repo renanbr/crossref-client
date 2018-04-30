@@ -24,7 +24,7 @@ use Psr\SimpleCache\CacheInterface;
 class CrossRefClient
 {
     const BASE_URI = 'https://api.crossref.org';
-    const LIB_VERSION = '1.x-dev';
+    const VERSION = '1.x-dev';
 
     /** @var Client */
     private $httpClient;
@@ -173,7 +173,7 @@ class CrossRefClient
         $handler->unshift(Middleware::mapRequest(function (Request $request) {
             return $request->withHeader('User-Agent', implode(' ', array_filter([
                 $this->userAgent,
-                sprintf('RenanBr-CrossRef-Client/%s', self::LIB_VERSION),
+                sprintf('RenanBr-CrossRef-Client/%s', self::VERSION),
                 GuzzleHttp\default_user_agent(),
             ])));
         }), $userAgentName);
