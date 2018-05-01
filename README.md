@@ -62,7 +62,7 @@ class RenanBr\CrossRefClient
 ## Installing
 
 ```bash
-composer require renanbr/crossref-client ^1@dev
+composer require renanbr/crossref-client ^1
 ```
 
 ## Usage

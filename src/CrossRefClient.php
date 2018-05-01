@@ -24,7 +24,7 @@ use Psr\SimpleCache\CacheInterface;
 class CrossRefClient
 {
     const BASE_URI = 'https://api.crossref.org';
-    const VERSION = '1.x-dev';
+    const VERSION = '1.0.0';
 
     /** @var Client */
     private $httpClient;
