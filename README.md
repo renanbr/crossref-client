@@ -27,6 +27,7 @@
    * [Caching results](#caching-results)
    * [Identifying your script](#identifying-your-script)
    * [Tying to a specific major version](#tying-to-a-specific-major-version)
+   * [Rate limits](#rate-limits)
 * [Handling errors](#handling-errors)
 
 ## Introduction
@@ -36,11 +37,13 @@ This is **NOT** an official library! The intent of this library is to provide an
 Highlighted features:
 
 - You don't need to worry about making HTTP requests;
-- Proper [exceptions] are thrown if a HTTP error occurs;
-- You receive responses as-is, with no treatment;
-- [Filter](https://github.com/CrossRef/rest-api-doc#filter-names) and [facet](https://github.com/CrossRef/rest-api-doc#facet-counts) parameters will be encoded if needed;
-- You can [be polite](https://github.com/CrossRef/rest-api-doc#etiquette) (caching, identifying your script);
-- You can [tie to a specific major version of the API](https://github.com/CrossRef/rest-api-doc#how-to-manage-api-versions).
+- Proper exceptions are thrown if an HTTP error occurs;
+- You receive responses as-is, without overlay;
+- [Filter](https://github.com/CrossRef/rest-api-doc#filter-names) and [facet](https://github.com/CrossRef/rest-api-doc#facet-counts) parameters are encoded if needed;
+- You can [cache responses](https://github.com/CrossRef/rest-api-doc#etiquette) easily;
+- You can [identify yourself](https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service), then you can benefit better service;
+- You can [tie to a specific major version of the API](https://github.com/CrossRef/rest-api-doc#how-to-manage-api-versions);
+- Your application complies with the [rate limit](https://github.com/CrossRef/rest-api-doc#rate-limits) (it works better if cache is configured).
 
 Library's summary:
 
@@ -195,8 +198,12 @@ $client->setVersion('v55');
 
 The above example tie all subsequent requests to the API version `v55`.
 
+### Rate limits
+
+By default, this library conforms to the rate limit imposed by the API for the **current execution**.
+
+If you want to keep this behavior **across multiple executions**, you must configure the cache, as mentioned above.
+
 ## Handling errors
 
-As this library uses [guzzlehttp/guzzle](http://guzzlephp.org) internally. Please refer to the [Guzzle Exceptions documentation](http://docs.guzzlephp.org/en/stable/quickstart.html#exceptions) to see how to handle [exceptions] properly.
-
-[exceptions]: http://php.net/exception
+As this library uses [guzzlehttp/guzzle](http://guzzlephp.org) internally. Please refer to the [Guzzle Exceptions documentation](http://docs.guzzlephp.org/en/stable/quickstart.html#exceptions) to see how to handle exceptions properly.
