@@ -11,6 +11,7 @@
 
 namespace RenanBr;
 
+use Concat\Http\Middleware\RateLimiter;
 use GuzzleHttp;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -20,6 +21,7 @@ use Kevinrob\GuzzleCache\CacheMiddleware;
 use Kevinrob\GuzzleCache\Storage\Psr16CacheStorage;
 use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use Psr\SimpleCache\CacheInterface;
+use RenanBr\CrossRefClient\RateLimitProvider;
 
 class CrossRefClient
 {
@@ -28,6 +30,9 @@ class CrossRefClient
 
     /** @var Client */
     private $httpClient;
+
+    /** @var RateLimitProvider */
+    private $rateLimitProvider;
 
     /** @var string */
     private $userAgent;
@@ -44,6 +49,7 @@ class CrossRefClient
     public function __construct(Client $httpClient = null)
     {
         $this->httpClient = $httpClient ?: new Client();
+        $this->rateLimitProvider = new RateLimitProvider();
     }
 
     /**
@@ -106,6 +112,7 @@ class CrossRefClient
      */
     public function setCache(CacheInterface $cache, $ttl = null)
     {
+        $this->rateLimitProvider->setCache($cache);
         $this->cache = $cache;
         $this->cacheTtl = $ttl ?: 1200; // 1200 seconds = 20 minutes
     }
@@ -187,5 +194,11 @@ class CrossRefClient
                 $this->cacheTtl
             )
         ), $cacheName);
+
+        // Appends rate limiter
+        $rateLimiter = new RateLimiter($this->rateLimitProvider);
+        $rateLimiterName = __CLASS__ . '_rate_limiter';
+        $handler->remove($rateLimiterName);
+        $handler->push($rateLimiter, $rateLimiterName);
     }
 }
