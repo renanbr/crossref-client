@@ -44,4 +44,18 @@ class RateLimiterTest extends TestCase
         $client->request('foo');
         $this->assertGreaterThanOrEqual(1, microtime(true) - $start);
     }
+
+    public function testDelayIsNotTriggered()
+    {
+        $numRequests = 100;
+        $responses = array_fill(0, $numRequests, new Response(200, [], 'null'));
+        $client = $this->buildMockedCrossRefClient($responses);
+
+        // All requests must be executed instantaneously
+        $start = microtime(true);
+        for ($i = 0; $i < $numRequests; ++$i) {
+            $client->request('foo');
+        }
+        $this->assertLessThan(1, microtime(true) - $start);
+    }
 }
