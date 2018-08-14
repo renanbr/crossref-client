@@ -37,7 +37,7 @@ class CrossRefClient
     /** @var string */
     private $userAgent;
 
-    /** @var CacheInterface */
+    /** @var null|CacheInterface */
     private $cache;
 
     /** @var int */
