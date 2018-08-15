@@ -28,7 +28,6 @@
         "rtheunissen/guzzle-rate-limiter": "^1.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.8",
         "phpunit/phpunit": "^5.7.10 || ^6.0"
     },
     "config": {
