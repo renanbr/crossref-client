@@ -77,6 +77,7 @@ composer require renanbr/crossref-client ^1
 See: https://github.com/CrossRef/rest-api-doc#singletons
 
 ```php
+require __DIR__ . '/vendor/autoload.php';
 $client = new RenanBr\CrossRefClient();
 $work = $client->request('works/10.1037/0003-066X.59.1.29');
 print_r($work);
@@ -116,6 +117,7 @@ Array
 See: https://github.com/CrossRef/rest-api-doc#headers-only
 
 ```php
+require __DIR__ . '/vendor/autoload.php';
 $client = new RenanBr\CrossRefClient();
 $exists = $client->exists('members/98');
 var_dump($exists);
@@ -136,6 +138,7 @@ A list has two parts: Summary; and Items. Normally, an API list result will retu
 See: https://github.com/CrossRef/rest-api-doc#lists
 
 ```php
+require __DIR__ . '/vendor/autoload.php';
 $client = new RenanBr\CrossRefClient();
 
 $parameters = [
@@ -160,6 +163,7 @@ foreach ($result['message']['items'] as $work) {
 See: https://github.com/CrossRef/rest-api-doc#etiquette
 
 ```php
+require __DIR__ . '/vendor/autoload.php';
 $client = new RenanBr\CrossRefClient();
 $client->setCache(new voku\cache\CachePsr16());
 
@@ -175,6 +179,7 @@ The above example uses [voku/simple-cache](https://github.com/voku/simple-cache)
 See: https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service
 
 ```php
+require __DIR__ . '/vendor/autoload.php';
 $client = new RenanBr\CrossRefClient();
 $client->setUserAgent('GroovyBib/1.1 (https://example.org/GroovyBib/; mailto:GroovyBib@example.org)');
 
@@ -190,6 +195,7 @@ The above example makes all subsequent requests attach the contact information g
 See: https://github.com/CrossRef/rest-api-doc#how-to-manage-api-versions
 
 ```php
+require __DIR__ . '/vendor/autoload.php';
 $client = new RenanBr\CrossRefClient();
 $client->setVersion('v55');
 
