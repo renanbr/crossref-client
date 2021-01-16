@@ -60,7 +60,7 @@ class RateLimitProvider implements RateLimitProviderInterface
     public function getRequestAllowance(RequestInterface $request)
     {
         $constraint = $this->getConstraint();
-        if (!$constraint['interval'] || !$constraint['limit'] || count($constraint['requests']) < $constraint['limit']) {
+        if (!$constraint['interval'] || !$constraint['limit'] || \count($constraint['requests']) < $constraint['limit']) {
             return 0;
         }
 
