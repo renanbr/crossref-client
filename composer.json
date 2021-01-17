@@ -28,7 +28,7 @@
         "rtheunissen/guzzle-rate-limiter": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7.10 || ^6.0"
+        "phpunit/phpunit": ">=5.7"
     },
     "config": {
         "sort-packages": true

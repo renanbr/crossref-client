@@ -54,7 +54,6 @@ class CrossRefClient
 
     /**
      * @param  string $path
-     * @param  array  $parameters
      * @return array
      */
     public function request($path, array $parameters = [])
@@ -107,8 +106,7 @@ class CrossRefClient
     }
 
     /**
-     * @param CacheInterface $cache
-     * @param int            $ttl
+     * @param int $ttl
      */
     public function setCache(CacheInterface $cache, $ttl = null)
     {
@@ -140,7 +138,6 @@ class CrossRefClient
     }
 
     /**
-     * @param  array $parameters
      * @return array
      * @see https://github.com/CrossRef/rest-api-doc#multiple-filters
      * @see https://github.com/CrossRef/rest-api-doc#facet-counts
@@ -149,16 +146,16 @@ class CrossRefClient
     {
         $encodable = ['filter', 'facet'];
         foreach ($encodable as $key) {
-            if (!isset($parameters[$key]) || !is_array($parameters[$key])) {
+            if (!isset($parameters[$key]) || !\is_array($parameters[$key])) {
                 continue;
             }
             $encoded = [];
             foreach ($parameters[$key] as $name => $value) {
-                if (!is_array($value)) {
+                if (!\is_array($value)) {
                     $value = [$value];
                 }
                 foreach ($value as $actual) {
-                    if (is_bool($actual)) {
+                    if (\is_bool($actual)) {
                         $actual = $actual ? 'true' : 'false';
                     }
                     $encoded[] = $name . ':' . $actual;

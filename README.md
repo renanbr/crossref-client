@@ -13,7 +13,10 @@
     </a>
 </p>
 
-[![Build Status](https://travis-ci.org/renanbr/crossref-client.svg?branch=master)](https://travis-ci.org/renanbr/crossref-client)
+![Tests](https://github.com/renanbr/crossref-client/workflows/Tests/badge.svg)
+[![codecov](https://codecov.io/gh/renanbr/crossref-client/branch/master/graph/badge.svg)](https://codecov.io/gh/renanbr/crossref-client)
+![Static Analysis](https://github.com/renanbr/crossref-client/workflows/Static%20Analysis/badge.svg)
+![Coding Standards](https://github.com/renanbr/crossref-client/workflows/Coding%20Standards/badge.svg)
 
 ## Table of contents
 
