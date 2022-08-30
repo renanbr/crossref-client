@@ -33,9 +33,6 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
 
-            - name: Install Pandoc
-              run: sudo apt install pandoc
-
             - name: Determine Composer cache directory
               id: composercache
               run: echo "::set-output name=dir::$(composer config cache-files-dir)"
