@@ -11,94 +11,37 @@
 
 namespace RenanBr\CrossRefClient;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
-use Cache\Bridge\SimpleCache\SimpleCacheBridge;
-use Concat\Http\Middleware\RateLimitProvider as RateLimitProviderInterface;
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\SimpleCache\CacheInterface;
 
-/**
- * @see https://github.com/CrossRef/rest-api-doc#rate-limits
- */
-class RateLimitProvider implements RateLimitProviderInterface
-{
-    const CACHE_INDEX = 'crossref-client-rate-limit';
-
-    /** @var CacheInterface */
-    private $cache;
-
-    public function __construct(CacheInterface $cache = null)
-    {
-        $this->setCache($cache ?: new SimpleCacheBridge(new ArrayCachePool()));
-    }
-
-    public function setCache(CacheInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    public function getLastRequestTime()
-    {
-        $constraint = $this->getConstraint();
-
-        return end($constraint['requests']) ?: null;
-    }
-
-    public function setLastRequestTime()
-    {
-        $constraint = $this->getConstraint();
-        $constraint['requests'][] = microtime(true);
-        $this->setConstraint($constraint);
-    }
-
-    public function getRequestTime(RequestInterface $request)
-    {
-        return microtime(true);
-    }
-
-    public function getRequestAllowance(RequestInterface $request)
-    {
-        $constraint = $this->getConstraint();
-        if (!$constraint['interval'] || !$constraint['limit'] || \count($constraint['requests']) < $constraint['limit']) {
-            return 0;
-        }
-
-        // Returns the amount of time that is required to have passed since the
-        // last request was made
-        return reset($constraint['requests']) + $constraint['interval'] - end($constraint['requests']);
-    }
-
-    public function setRequestAllowance(ResponseInterface $response)
-    {
-        $constraint = $this->getConstraint();
-        $constraint['interval'] = (int) $response->getHeaderLine('X-Rate-Limit-Interval');
-        $constraint['limit'] = (int) $response->getHeaderLine('X-Rate-Limit-Limit');
-        $this->setConstraint($constraint);
-    }
-
+if (InstalledVersions::satisfies(new VersionParser(), 'rtheunissen/guzzle-rate-limiter', '^2.0')) {
     /**
-     * @return array
+     * @see https://github.com/CrossRef/rest-api-doc#rate-limits
      */
-    private function getConstraint()
+    class RateLimitProvider extends AbstractRateLimitProvider
     {
-        return $this->cache->get(self::CACHE_INDEX, [
-            'interval' => null,
-            'limit' => null,
-            'requests' => [],
-        ]);
-    }
-
-    private function setConstraint(array $constraint)
-    {
-        if ($constraint['interval']) {
-            $cut = microtime(true) - $constraint['interval'];
-            $constraint['requests'] = array_filter($constraint['requests'], static function ($time) use ($cut) {
-                return $time >= $cut;
-            });
+        public function getLastRequestTime(RequestInterface $request)
+        {
+            return $this->doGetLastRequestTime();
         }
 
-        $ttl = $constraint['interval'] ?: 60;
-        $this->cache->set(self::CACHE_INDEX, $constraint, $ttl);
+        public function setLastRequestTime(RequestInterface $request)
+        {
+            $this->doSetLastRequestTime();
+        }
+    }
+} else {
+    class RateLimitProvider extends AbstractRateLimitProvider
+    {
+        public function getLastRequestTime()
+        {
+            return $this->doGetLastRequestTime();
+        }
+
+        public function setLastRequestTime()
+        {
+            $this->doSetLastRequestTime();
+        }
     }
 }
