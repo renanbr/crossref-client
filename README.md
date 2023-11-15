@@ -13,11 +13,6 @@
     </a>
 </p>
 
-![Tests](https://github.com/renanbr/crossref-client/workflows/Tests/badge.svg)
-[![codecov](https://codecov.io/gh/renanbr/crossref-client/branch/master/graph/badge.svg)](https://codecov.io/gh/renanbr/crossref-client)
-![Static Analysis](https://github.com/renanbr/crossref-client/workflows/Static%20Analysis/badge.svg)
-![Coding Standards](https://github.com/renanbr/crossref-client/workflows/Coding%20Standards/badge.svg)
-
 ## Table of contents
 
 * [Introduction](#introduction)
