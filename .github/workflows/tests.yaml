@@ -8,59 +8,33 @@ on:
 
     pull_request:
 
-    schedule:
-        - cron: '20 16 * * SUN'
-
 jobs:
 
     tests:
 
-        name: PHPUnit (PHP ${{ matrix.php-version }}) ${{ matrix.lowest-dependencies && '(lowest deps)' || '' }}
+        name: PHPUnit (PHP ${{ matrix.php-version }}) (${{ matrix.dependencies }} dependencies)
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                lowest-dependencies: [true, false]
-                php-version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
-                include:
-                    - php-version: '7.4'
-                      lowest-dependencies: false
-                      coverage: true
-        env:
-            COMPOSER_FLAGS: ${{ matrix.lowest-dependencies && '--prefer-lowest' || '' }}
+                php-version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
+                dependencies: ['lowest', 'highest']
 
         steps:
 
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php-version }}
-                  coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
-
-            - name: Determine Composer cache directory
-              id: composercache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            - name: Load Composer cache
-              uses: actions/cache@v2
-              with:
-                  path: ${{ steps.composercache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-                  restore-keys: ${{ runner.os }}-composer-
+                  coverage: none
 
             - name: Install Composer dependencies
-              run: |
-                composer update --no-interaction --prefer-dist ${{ env.COMPOSER_FLAGS }}
-                composer update --no-interaction --prefer-dist --with-all-dependencies phpunit/phpunit
+              uses: ramsey/composer-install@v2
+              with:
+                  dependency-versions: ${{ matrix.dependencies }}
 
             - name: Run PHPUnit
-              run: vendor/bin/phpunit --testdox ${{ !matrix.coverage && '--no-coverage' || '--coverage-clover coverage.xml' }}
-
-            - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@v1
-              if: ${{ matrix.coverage }}
-              with:
-                  file: ./coverage.xml
+              run: vendor/bin/phpunit --testdox

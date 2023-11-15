@@ -18,30 +18,20 @@ jobs:
         steps:
 
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Setup tools
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
+                  php-version: 8.2
                   tools: phpstan, cs2pr
-
-            - name: Get Composer cache directory
-              id: composercache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            - name: Cache Composer dependencies
-              uses: actions/cache@v2
-              with:
-                  path: ${{ steps.composercache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-                  restore-keys: ${{ runner.os }}-composer-
+                  coverage: none
 
             - name: Install Composer dependencies
-              run: composer install --no-interaction --prefer-dist
+              uses: ramsey/composer-install@v2
 
             - name: Cache PHPStan
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: var/phpstan/
                   key: phpstan-${{ github.sha }}
